@@ -9,24 +9,28 @@
 namespace model
 {
 
+class player;
+class base;
+class game;
+
 class field
 {
 public:
-    field(uint xin, uint yin);
+    field(uint xin, uint yin, game* gin);
 
     // getters:
     bool canBeEntered() const;
     inline uint x() const {return locx;}
     inline uint y() const {return locy;}
-    inline vector<field*> const& neighbours() const {return _neighbours;}
+    inline std::vector<field*> const& neighbours() const {return _neighbours;}
 private:
     const uint locx;
     const uint locy;
-    vector<unit*> _units;
+    std::vector<unit*> _units;
     tower* _tower;
     base* _base;
     game* _game;
-    vector<field*> _neighbours;
+    std::vector<field*> _neighbours;
 };
 
 }

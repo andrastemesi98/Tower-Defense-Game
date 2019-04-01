@@ -8,11 +8,15 @@
 
 namespace model {
 
+class unit;
+class tower;
+class field;
+
 class player
 {
 
 public:
-    player(const string& nin, int def_gold);
+    player(const std::string& nin, int def_gold);
 
     // modifying functions:
     void update();
@@ -25,17 +29,17 @@ public:
     bool placeTower(int ID, field* loc);
 
     // getters:
-    inline const string& name() const {return _name;}
+    inline const std::string& name() const {return _name;}
     inline int gold() const {return _gold;}
-    inline vector<unit*> const& units() const {return _units;}
-    inline vector<unit*> const& fields() const {return _fields;}
+    inline std::vector<unit*> const& units() const {return _units;}
+    inline std::vector<field*> const& fields() const {return _fields;}
 
 
 private:
-    vector<unit *> _units;
-    vector<field *> _fields;
+    std::vector<unit *> _units;
+    std::vector<field *> _fields;
     int _gold; // negatives are not excluded
-    string _name;
+    std::string _name;
 };
 
 }

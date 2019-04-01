@@ -6,6 +6,7 @@
 
 namespace model
 {
+
 class base
 {
 

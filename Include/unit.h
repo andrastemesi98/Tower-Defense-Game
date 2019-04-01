@@ -7,6 +7,11 @@
 
 namespace model
 {
+
+class player;
+class field;
+class path;
+
 class unit
 {
 public:

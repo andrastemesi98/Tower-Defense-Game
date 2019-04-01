@@ -6,6 +6,9 @@
 
 namespace model
 {
+
+class field;
+
 class path
 {
 
@@ -17,7 +20,7 @@ public:
     void recalculate(); // called by "recheck()" by default
 
 private:
-    vector<field *> _fields;
+    std::vector<field *> _fields;
     field *goal;
     uint current; // index of the current field;
 };

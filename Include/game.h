@@ -6,6 +6,8 @@
 
 namespace model
 {
+class field;
+class player;
 
 // collection of data used in the model
 struct game
@@ -20,12 +22,12 @@ public:
     field* operator()(uint x, uint y);
     field const* operator()(uint x, uint y) const;
 
-    inline const vector<player>& players() const {return _players;}
-    inline player& getPlayer(uint index) {return players[index];}
+    inline const std::vector<player>& players() const {return _players;}
+    inline player& getPlayer(uint index) {return _players[index];}
 
 private:
-    vector< vector <field > > _fields;
-    vector<player> _players;
+    std::vector< std::vector <field > > _fields;
+    std::vector<player> _players;
 };
 }
 
