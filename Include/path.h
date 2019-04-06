@@ -13,16 +13,25 @@ class path
 {
 
 public:
-    path(model::field* start, field* goal);
+    path(model::field* startin, field* goalin);
 
-    bool check();
+    // getters:
+    inline field* goal() {return _goal;}
+    inline const field* goal() const { return _goal;}
+    inline field* current() {return _fields[current];}
+    
+    // modifiers:    
     void recheck(); // checks and recalculates if neccessary
-    void recalculate(); // called by "recheck()" by default
+    bool operator++();
 
+    
 private:
     std::vector<field *> _fields;
-    field *goal;
-    uint current; // index of the current field;
+    field *_goal;
+    uint _current; // index of the current field;
+
+    bool check() const;
+    void recalculate(); // called by "recheck()" by default
 };
 }
 
