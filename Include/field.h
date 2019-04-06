@@ -27,6 +27,11 @@ public:
     const uint y;
     game * getGame() const {return _game;}
 
+    
+    // setters:
+    inline bool addTower(tower* t);
+    inline bool addBase(tower* t);
+    
     // dijkstra helper values / functions:
     field* prev;
     double dist;
@@ -45,6 +50,18 @@ private:
     base* _base;
     game * const _game;
 };
+
+ bool field::addTower(tower* t)
+ {
+   if(canBeEntered())
+     _tower = t;   
+ }
+
+ bool field::addTower(base* t)
+ {
+   if(canBeEntered())
+     _base = t;   
+ }
 
 }
 

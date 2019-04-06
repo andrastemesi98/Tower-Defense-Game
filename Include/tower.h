@@ -14,10 +14,11 @@ class tower
 {
 
 public:
-    tower(player* pl, field* f, uint dmg, uint rng);
+  inline tower(player* pl, field* f, uint dmg, uint rng) : _owner(pl), _loc(f), 
+    _range(rng), _dmg(dmg) {}
 
     // modifying functions:
-    void shoot();
+    // void shoot(); // is not implemented yet
 
     // getters:
     inline player* owner() {return _owner;}
