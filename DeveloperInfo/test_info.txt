@@ -1,0 +1,2 @@
+dijkstra_test.cpp fordítása a FŐKÖNVTÁRBÓL (terminalban):
+g++-7 -o main Test/dijkstra_test.cpp Source/path.cpp Source/game.cpp Source/field.cpp -Wall -Wextra -std=c++17

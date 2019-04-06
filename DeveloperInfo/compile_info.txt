@@ -1,0 +1,7 @@
+gcc/g++-os fordításnál: -Wall -Wextra flageket mindenképpen
+használjunk. Az olyan kód jó, ami nem ad warningot semmire. 
+
+Más fordítóval fordítás: minél szigorúbb fordítási beállításokkal, ne
+adjon warningot.
+
+Szabvány legyen c++11, ezt gcc/g++-ban a -std=c++11 flaggel lehet beállítani.
