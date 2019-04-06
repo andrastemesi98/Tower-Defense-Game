@@ -30,7 +30,7 @@ public:
     
     // setters:
     inline bool addTower(tower* t);
-    inline bool addBase(tower* t);
+    inline bool addBase(base* t);
     
     // dijkstra helper values / functions:
     field* prev;
@@ -53,14 +53,18 @@ private:
 
  bool field::addTower(tower* t)
  {
-   if(canBeEntered())
-     _tower = t;   
+   if(!canBeEntered())
+     return false;
+   _tower = t;
+   return true;
  }
 
- bool field::addTower(base* t)
+ bool field::addBase(base* t)
  {
-   if(canBeEntered())
-     _base = t;   
+   if(!canBeEntered())
+     return false;
+   _base = t;   
+   return true;
  }
 
 }

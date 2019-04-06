@@ -27,7 +27,7 @@ void print(model::game& g, std::vector<model::field*> *way = nullptr)
 	      if(b) continue;
 	    }
 	  if(f->canBeEntered()) std::cout << "0 ";
-	  else std::cout << "1";
+	  else std::cout << "1 ";
 	}
       std::cout << "\n";
     }
@@ -47,12 +47,21 @@ void printpath(const V& v)
 int main()
 {
   model::game g(5, 7);
-  print(g);
   
   model::field* start = g.getField(2,1);
   model::field* goal = g.getField(3,6);
   std::vector<model::field*> fs;
   
+  
+  model::tower tt(nullptr, nullptr, 10, 10);
+  //g.getField(6, 3)->addTower(&tt);
+  //g.getField(5, 3)->addTower(&tt);
+  g.getField(4, 3)->addTower(&tt);
+  g.getField(3, 3)->addTower(&tt);
+  g.getField(2, 3)->addTower(&tt);
+  g.getField(1, 3)->addTower(&tt);
+  print(g);
+
   bool b = model::dijkstra(fs, start, goal);
   if(!b)
     std::cerr << "Hibás dijkstra: nem talál utat\n";
