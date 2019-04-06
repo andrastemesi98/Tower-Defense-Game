@@ -16,7 +16,10 @@ class game;
 class field
 {
 public:
-    field(uint xin, uint yin, game* gin);
+  inline field(uint xin, uint yin, game* gin, double wein = 1.0)  :
+    x(xin), y(yin), prev(nullptr), dist(0), weight(wein), _tower(nullptr), 
+    _base(nullptr), _game(gin)
+  { }
 
     // getters:
     bool canBeEntered() const;
@@ -27,8 +30,8 @@ public:
     // dijkstra helper values / functions:
     field* prev;
     double dist;
-    const double weight = 1.0; // int the first version of the game, each weight is 0
-    field* neighbour(unsinged int num); 
+    const double weight; // int the first version of the game, each weight is 1.0
+    field* neighbour(unsigned int num); 
     /*
       the meaning of "num" (where F is the current field):
       123
@@ -37,8 +40,6 @@ public:
      */
     
 private:
-    const uint locx;
-    const uint locy;
     std::vector<unit*> _units;
     tower* _tower;
     base* _base;

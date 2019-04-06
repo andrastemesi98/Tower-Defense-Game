@@ -12,6 +12,9 @@ namespace model
   // "fields" is filled so that fields[0] = start and fields.back() = goal 
   bool dijkstra(std::vector<field* >& fields, field* start, field* goal)
   {
+    if(start == nullptr || goal == nullptr)
+      return false;
+    
     game* g = start->getGame();
     if(goal->getGame() != g)
       return false;
@@ -28,11 +31,15 @@ namespace model
     bool all_looked_at = false;
     while(minf != goal && !all_looked_at)
       {
+	minf = nullptr;
+	mindist = std::numeric_limits<double>::infinity();
 	bool look_new = false;
 	for(auto f : Q)
 	  for(unsigned int i = 1; i <= 8; ++i)
 	    {
 	      field* nei = f->neighbour(i);
+	      if(nei == nullptr)
+		continue;
 	      if(! nei->canBeEntered())
 		continue;
 	      if(Q.find(nei) != Q.end()) // if the it is already in Q
@@ -48,6 +55,8 @@ namespace model
 	    }
 	if(look_new == false)
 	  all_looked_at = true;
+	Q.insert(minf);
+	minf->dist = mindist;
       }
     if(all_looked_at)
       return false;
@@ -56,14 +65,13 @@ namespace model
     for(field* f = goal; f != start; f = f->prev)
       fields.push_back(f);
     fields.push_back(start);
-    std::reverse(myvector.begin(),myvector.end());
+    std::reverse(fields.begin(), fields.end()); // fields[0] should be equal to start
     return true;
   }
 
   
-  path::path(field* startin, field* goalin) : _goal(goalin), current(currentin)
+  path::path(field* startin, field* goalin) : _goal(goalin), _current(0)
   {
-    uint current = 0;
     dijkstra(_fields, startin, goalin);
   }
 
@@ -88,7 +96,7 @@ namespace model
     // if the current field is a neighbour of the enemy base:
     if(_current == _fields.size() -2)
       return false;
-    ++current;
+    ++_current;
     return true;
   }
 
@@ -97,3 +105,5 @@ namespace model
     field* f = _fields[_current];
     dijkstra(_fields, f, _goal);
   }
+
+}

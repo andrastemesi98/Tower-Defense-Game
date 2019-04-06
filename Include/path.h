@@ -18,7 +18,7 @@ public:
     // getters:
     inline field* goal() {return _goal;}
     inline const field* goal() const { return _goal;}
-    inline field* current() {return _fields[current];}
+    inline field* current() {return _fields[_current];}
     
     // modifiers:    
     void recheck(); // checks and recalculates if neccessary
@@ -33,6 +33,8 @@ private:
     bool check() const;
     void recalculate(); // called by "recheck()" by default
 };
+
+ bool dijkstra(std::vector<field* >& fields, field* start, field* goal);
 }
 
 #endif // PATH_H

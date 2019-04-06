@@ -16,7 +16,7 @@ class unit
 {
 public:
     unit(player *p, field *l, uint HPin, uint dmg, uint sp);
-    virtual ~unit();
+    inline virtual ~unit() {}
 
     // modifying functions:
     void move();
@@ -39,7 +39,7 @@ private:
     uint _HP;
     uint _dmg;
     uint _speed;
-    path _path;
+    //path _path; // valamiért fordítási hibát ad
 };
 
 }
