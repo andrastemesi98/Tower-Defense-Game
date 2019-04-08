@@ -7,6 +7,10 @@
 namespace model
 {
 
+  class player;
+  class field;
+  class tower;
+
 class base
 {
 

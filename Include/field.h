@@ -12,6 +12,8 @@ namespace model
 class player;
 class base;
 class game;
+ class unit;
+ class tower;
 
 class field
 {
