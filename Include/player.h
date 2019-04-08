@@ -32,12 +32,12 @@ public:
     inline const std::string& name() const {return _name;}
     inline int gold() const {return _gold;}
     inline std::vector<unit*> const& units() const {return _units;}
-    inline std::vector<field*> const& fields() const {return _fields;}
+    inline std::vector<tower*> const& towers() const {return _fields;}
 
 
 private:
     std::vector<unit *> _units;
-    std::vector<field *> _fields;
+    std::vector<tower *> _towers;
     int _gold; // negatives are not excluded
     std::string _name;
 };
