@@ -8,9 +8,9 @@ void print(model::game& g, std::vector<model::field*> *way = nullptr)
   if(way != nullptr)
     std::cout << "Dijkstra from (" << (*way)[0]->x << ","<< (*way)[0]->y << ") to ("
 	      << (*way).back()->x << "," << (*way).back()->y << ")\n";
-  for(uint i = 0; i < g.sizey(); ++i)
+  for(model::uint i = 0; i < g.sizey(); ++i)
     {
-      for(uint j = 0; j < g.sizex(); ++j)
+      for(model::uint j = 0; j < g.sizex(); ++j)
 	{
 	  auto f = g.getField(j, i);
 	  if(f == nullptr)

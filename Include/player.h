@@ -32,7 +32,7 @@ public:
     inline const std::string& name() const {return _name;}
     inline int gold() const {return _gold;}
     inline std::vector<unit*> const& units() const {return _units;}
-    inline std::vector<tower*> const& towers() const {return _fields;}
+    inline std::vector<tower*> const& towers() const {return _towers;}
 
 
 private:
