@@ -88,6 +88,7 @@ void view::view::runTest()
       std::cerr << "Hibás dijkstra: nem talál utat\n";
     printpath(fs);
     print(g, &fs);
+    //if(_infoLabel != NULL) delete _infoLabel;
 }
 
 void view::view::settings()
@@ -99,10 +100,43 @@ Rövidítve emlékeztető:\n\
 Első (piros) játékos: torony – bal egérgomb mezőre, egység – bal egérgomb bázisra.\n\
 Második (zöld) játékos: mezőválasztás – nyilak, torony – ’t’, egység – ’e’.");
     infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
+
+    sizeButtons = new QHBoxLayout();
+    _sizeLabel = new QLabel("Pályaméret:");
+    _smallGame = new QPushButton("Kis pálya");
+    _middleGame = new QPushButton("Közepes pálya");
+    _bigGame = new QPushButton("Nagy pálya");
+    connect(_smallGame, SIGNAL(clicked()), this, SLOT(setSmallGame()));
+    connect(_middleGame, SIGNAL(clicked()), this, SLOT(setMiddleGame()));
+    connect(_bigGame, SIGNAL(clicked()), this, SLOT(setBigGame()));
+
+    sizeButtons->addWidget(_sizeLabel);
+    sizeButtons->addWidget(_smallGame);
+    sizeButtons->addWidget(_middleGame);
+    sizeButtons->addWidget(_bigGame);
+    infos->addLayout(sizeButtons);
 }
 
 void view::view::exit()
 {
     QMessageBox::information(this, "Kilépés", "A játékablak bezárul!");
     QApplication::quit();
+}
+
+void view::view::setSmallGame()
+{
+    _sizex = 20;
+    _sizey = 20;
+}
+
+void view::view::setMiddleGame()
+{
+    _sizex = 35;
+    _sizey = 35;
+}
+
+void view::view::setBigGame()
+{
+    _sizex = 50;
+    _sizey = 50;
 }
