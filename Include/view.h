@@ -22,22 +22,30 @@ public:
     //inline ~view() {delete _game(x, y);}
     //egyelőre a pályaméret állítható, ez kibővíthető játékmóddal
     inline void newGame(model::uint x, model::uint y) {_game(x, y);}
-    inline void setGameSize(model::uint x, model::uint y) {_sizex = x; _sizey = y;}
+    //inline void setGameSize(model::uint x, model::uint y) {_sizex = x; _sizey = y;}
 
 public slots:
     void runTest();
     void settings();
     void exit();
+    void setSmallGame();
+    void setMiddleGame();
+    void setBigGame();
 
 private:
     model::game* _game(model::uint x, model::uint y);
     QPushButton* _newGame;
     QPushButton* _settings;
     QPushButton* _exit;
-    uint _sizex, _sizey; //lehet alapérték
+    QPushButton* _smallGame;
+    QPushButton* _middleGame;
+    QPushButton* _bigGame;
+    uint _sizex = 20, _sizey = 20;
     QHBoxLayout* menu; //3 kezdőgomb
+    QHBoxLayout* sizeButtons;
     QVBoxLayout* infos;
     QLabel* _infoLabel;
+    QLabel* _sizeLabel;
 
 
 };
