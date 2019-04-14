@@ -10,6 +10,7 @@
 #include <QVector>
 #include <QHBoxLayout>
 #include <QApplication>
+#include <QKeyEvent>
 
 namespace view
 {
@@ -25,28 +26,37 @@ public:
     //inline void setGameSize(model::uint x, model::uint y) {_sizex = x; _sizey = y;}
 
 public slots:
-    void runTest();
+    void run();
     void settings();
     void exit();
     void setSmallGame();
     void setMiddleGame();
     void setBigGame();
+    void buttonClicked();
 
 private:
     model::game* _game(model::uint x, model::uint y);
+    //menü gombjai:
     QPushButton* _newGame;
     QPushButton* _settings;
     QPushButton* _exit;
+    //pályaméret gombjai
     QPushButton* _smallGame;
     QPushButton* _middleGame;
     QPushButton* _bigGame;
-    uint _sizex = 20, _sizey = 20;
+    uint _sizex = 10, _sizey = 10; //pályaméret
     QHBoxLayout* menu; //3 kezdőgomb
-    QHBoxLayout* sizeButtons;
-    QVBoxLayout* infos;
-    QLabel* _infoLabel;
-    QLabel* _sizeLabel;
+    QHBoxLayout* sizeButtons; //pályaméret gombjai egymás mellett
+    QVBoxLayout* infos; //dolgok egymás alatt
+    QLabel* _infoLabel; //settingsben leírás, hogy hogyan kell játszani
+    QLabel* _sizeLabel; //settingsben "Pályaméret:"
 
+    QVector<QVector<QPushButton*>> buttonTable; //Új játékban a tábla
+    QGridLayout* tableLayout;
+
+    bool inNewgame = false, inSettings = false; //épp hol vagyunk
+
+    void keyPressEvent(QKeyEvent *event);
 
 };
 
