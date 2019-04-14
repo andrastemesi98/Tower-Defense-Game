@@ -12,7 +12,7 @@ view::view::view(QWidget *parent) : QWidget(parent)
     _newGame = new QPushButton("Új Játék");
     _settings = new QPushButton("Beállítások");
     _exit = new QPushButton("Kilépés");
-    connect(_newGame, SIGNAL(clicked()), this, SLOT(runTest())); //a tesztet futtatja egyelőre
+    connect(_newGame, SIGNAL(clicked()), this, SLOT(run()));
     connect(_settings, SIGNAL(clicked()), this, SLOT(settings()));
     connect(_exit, SIGNAL(clicked()), this, SLOT(exit()));
     menu->addWidget(_newGame);
@@ -20,101 +20,90 @@ view::view::view(QWidget *parent) : QWidget(parent)
     menu->addWidget(_exit);
     infos->addLayout(menu);
     setLayout(infos);
-
-
 }
 
-void print(model::game& g, std::vector<model::field*> *way = nullptr)
+void view::view::run()
 {
-  if(way != nullptr)
-    std::cout << "Dijkstra from (" << (*way)[0]->x << ","<< (*way)[0]->y << ") to ("
-          << (*way).back()->x << "," << (*way).back()->y << ")\n";
-  for(model::uint i = 0; i < g.sizey(); ++i)
+    //ha léteznek, akkor kell kitörölni őket:
+    if(inSettings)
     {
-      for(model::uint j = 0; j < g.sizex(); ++j)
+        delete _infoLabel;
+        delete _sizeLabel;
+        delete _smallGame;
+        delete _middleGame;
+        delete _bigGame;
+        inSettings = false;
+    }
+
+    tableLayout = new QGridLayout();
+    infos->addLayout(tableLayout);
+
+    if(!inNewgame)
     {
-      auto f = g.getField(j, i);
-      if(f == nullptr)
-        throw "HIBA VALAHOL? EZ NEM LEHET!\n";
-      if(way != nullptr)
+        inNewgame = true;
+        buttonTable.resize(_sizex);
+        for (uint i = 0; i < _sizex; ++i)
         {
-          bool b = false;
-          for(auto w : *way)
-        if(w == f)
-          {
-            std::cout << "D ";
-            b = true;
-          }
-          if(b) continue;
+            buttonTable[i].resize(_sizey);
         }
-      if(f->canBeEntered()) std::cout << "0 ";
-      else std::cout << "1 ";
+
+        for (int i = 0; i < buttonTable.size(); i++)
+            {
+                for(int j = 0; j < buttonTable[0].size(); j++)
+                {
+                    buttonTable[i][j] = new QPushButton();
+                    buttonTable[i][j]->setFont(QFont("Times New Roman", 10, QFont::Bold));
+                    buttonTable[i][j]->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    tableLayout->addWidget(buttonTable[i][j], i, j);
+                    buttonTable[i][j]->setStyleSheet("background-color:orange;");
+
+                    connect(buttonTable[i][j], SIGNAL(clicked()), this, SLOT(buttonClicked()));
+                }
+            }
+        //newGame(_sizex, _sizey);
     }
-      std::cout << "\n";
-    }
-  std::cout << std::flush;
-}
-
-
-template<class V>
-void printpath(const V& v)
-{
-  std::cout << "path length = " << v.back()->dist << " => ";
-  for(auto f : v)
-    std::cout << "(" << f->x << "," <<  f->y << ") ";
-  std::cout << std::endl;
-}
-
-void view::view::runTest()
-{
-    model::game g(5, 7);
-
-    model::field* start = g.getField(2,1);
-    model::field* goal = g.getField(3,6);
-    std::vector<model::field*> fs;
-
-
-    model::tower tt(nullptr, nullptr, 10, 10);
-    //g.getField(6, 3)->addTower(&tt);
-    //g.getField(5, 3)->addTower(&tt);
-    g.getField(4, 3)->addTower(&tt);
-    g.getField(3, 3)->addTower(&tt);
-    g.getField(2, 3)->addTower(&tt);
-    g.getField(1, 3)->addTower(&tt);
-    print(g);
-
-    bool b = model::dijkstra(fs, start, goal);
-    if(!b)
-      std::cerr << "Hibás dijkstra: nem talál utat\n";
-    printpath(fs);
-    print(g, &fs);
-    //if(_infoLabel != NULL) delete _infoLabel;
 }
 
 void view::view::settings()
 {
-    _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a bázisára kattintva egységet indíthat onnan.\n\
-A 2. játékos (zöld) a nyilakkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, e körül szaggatott vonal jelenik meg.\n\
-A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
-Rövidítve emlékeztető:\n\
-Első (piros) játékos: torony – bal egérgomb mezőre, egység – bal egérgomb bázisra.\n\
-Második (zöld) játékos: mezőválasztás – nyilak, torony – ’t’, egység – ’e’.");
-    infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
+    if(!inSettings)
+    {
+        inSettings = true;
+        inNewgame = false;
 
-    sizeButtons = new QHBoxLayout();
-    _sizeLabel = new QLabel("Pályaméret:");
-    _smallGame = new QPushButton("Kis pálya");
-    _middleGame = new QPushButton("Közepes pálya");
-    _bigGame = new QPushButton("Nagy pálya");
-    connect(_smallGame, SIGNAL(clicked()), this, SLOT(setSmallGame()));
-    connect(_middleGame, SIGNAL(clicked()), this, SLOT(setMiddleGame()));
-    connect(_bigGame, SIGNAL(clicked()), this, SLOT(setBigGame()));
+        for (int i = 0; i < buttonTable.size(); i++)
+        {
+            for(int j = 0; j < buttonTable[0].size(); j++)
+            {
+                tableLayout->removeWidget(buttonTable[i][j]);
+                delete buttonTable[i][j];
+            }
+        }
 
-    sizeButtons->addWidget(_sizeLabel);
-    sizeButtons->addWidget(_smallGame);
-    sizeButtons->addWidget(_middleGame);
-    sizeButtons->addWidget(_bigGame);
-    infos->addLayout(sizeButtons);
+        //ha nem léteznek, akkor kell létrehozni őket:
+        _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a bázisára kattintva egységet indíthat onnan.\n\
+    A 2. játékos (zöld) a nyilakkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, e körül szaggatott vonal jelenik meg.\n\
+    A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
+    Rövidítve emlékeztető:\n\
+    Első (piros) játékos: torony – bal egérgomb mezőre, egység – bal egérgomb bázisra.\n\
+    Második (zöld) játékos: mezőválasztás – nyilak, torony – ’t’, egység – ’e’.");
+        infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
+
+        sizeButtons = new QHBoxLayout();
+        _sizeLabel = new QLabel("Pályaméret:");
+        _smallGame = new QPushButton("Kis pálya");
+        _middleGame = new QPushButton("Közepes pálya");
+        _bigGame = new QPushButton("Nagy pálya");
+        connect(_smallGame, SIGNAL(clicked()), this, SLOT(setSmallGame()));
+        connect(_middleGame, SIGNAL(clicked()), this, SLOT(setMiddleGame()));
+        connect(_bigGame, SIGNAL(clicked()), this, SLOT(setBigGame()));
+
+        sizeButtons->addWidget(_sizeLabel);
+        sizeButtons->addWidget(_smallGame);
+        sizeButtons->addWidget(_middleGame);
+        sizeButtons->addWidget(_bigGame);
+        infos->addLayout(sizeButtons);
+    }
 }
 
 void view::view::exit()
@@ -125,18 +114,37 @@ void view::view::exit()
 
 void view::view::setSmallGame()
 {
-    _sizex = 20;
-    _sizey = 20;
+    _sizex = 10;
+    _sizey = 10;
 }
 
 void view::view::setMiddleGame()
 {
-    _sizex = 35;
-    _sizey = 35;
+    _sizex = 20;
+    _sizey = 20;
 }
 
 void view::view::setBigGame()
 {
-    _sizex = 50;
-    _sizey = 50;
+    _sizex = 30;
+    _sizey = 30;
+}
+
+void view::view::buttonClicked()
+{
+    uint nr = tableLayout->indexOf(qobject_cast<QPushButton*>(sender()));
+    uint a, b;
+    a = nr / _sizex;
+    b = nr % _sizex;
+}
+
+void view::view::keyPressEvent(QKeyEvent *event)
+{
+    if(inNewgame)
+    {
+        if(event->key() == Qt::Key_T)
+        {
+            //...
+        }
+    }
 }
