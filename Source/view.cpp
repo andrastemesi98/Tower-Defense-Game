@@ -1,7 +1,6 @@
 #include "../Include/view.h"
 #include <QMessageBox>
 
-
 view::view::view(QWidget *parent) : QWidget(parent)
 {
     resize(900, 900);
