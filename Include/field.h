@@ -1,3 +1,4 @@
+#pragma once
 #ifndef FIELD_H
 #define FIELD_H
 
@@ -19,7 +20,7 @@ class field
 {
 public:
   inline field(uint xin, uint yin, game* gin, double wein = 1.0)  :
-    x(xin), y(yin), prev(nullptr), dist(0), weight(wein), _tower(nullptr), 
+    x(xin), y(yin), prev(nullptr), dist(0), weight(wein), _tower(nullptr),
     _base(nullptr), _game(gin)
   { }
 
@@ -28,24 +29,26 @@ public:
     const uint x;
     const uint y;
     game * getGame() const {return _game;}
+    inline base* getBase() {return _base;}
 
-    
     // setters:
     inline bool addTower(tower* t);
     inline bool addBase(base* t);
-    
+    bool addUnit(unit* u);
+    void remUnit(unit* u);
+
     // dijkstra helper values / functions:
     field* prev;
     double dist;
     const double weight; // int the first version of the game, each weight is 1.0
-    field* neighbour(unsigned int num); 
+    field* neighbour(unsigned int num);
     /*
       the meaning of "num" (where F is the current field):
       123
       4F5
       678
      */
-    
+
 private:
     std::vector<unit*> _units;
     tower* _tower;
@@ -65,7 +68,7 @@ private:
  {
    if(!canBeEntered())
      return false;
-   _base = t;   
+   _base = t;
    return true;
  }
 
