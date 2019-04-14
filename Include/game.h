@@ -1,3 +1,4 @@
+#pragma once
 #ifndef GAME_H
 #define GAME_H
 
@@ -10,15 +11,15 @@ class field;
 class player;
 
 // collection of data used in the model
-struct game
+class game
 {
 public:
   // must be extended later so that the "_players" vector is filled
   game(uint xin, uint yin);
   inline ~game() {}
 
-  inline field* getField(int x, int y);
-  inline const field* getField(int x, int y) const;
+  inline field* getField(uint x, uint y);
+  inline const field* getField(uint x, uint y) const;
   inline uint sizex() const {return _fields.size();}
   inline uint sizey() const {return _fields[0].size();}
  
@@ -32,18 +33,18 @@ private:
 
 
 
- field* game::getField(int x, int y)
+ field* game::getField(uint x, uint y)
  {
-   if(x < 0 || y < 0 || x >= static_cast<int>(_fields.size()) || 
-      y >= static_cast<int>(_fields[0].size()) )
+   if(x < 0 || y < 0 || x >= static_cast<uint>(_fields.size()) ||
+      y >= static_cast<uint>(_fields[0].size()) )
      return nullptr;
    return &_fields[x][y];
  }
  
- const field* game::getField(int x, int y) const
+ const field* game::getField(uint x, uint y) const
  {
-   if(x < 0 || y < 0 || x >= static_cast<int>(_fields.size()) || 
-      y >= static_cast<int>(_fields[0].size()) )
+   if(x < 0 || y < 0 || x >= static_cast<uint>(_fields.size()) ||
+      y >= static_cast<uint>(_fields[0].size()) )
      return nullptr;
    return &_fields[x][y];
  }
