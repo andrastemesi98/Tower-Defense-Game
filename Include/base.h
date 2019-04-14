@@ -20,6 +20,7 @@ public:
 
     // modifying functions:
     bool check();
+    void take_damage(uint amount);
 
     // getters:
     inline player* owner() {return _owner;}
