@@ -28,12 +28,14 @@ public:
     const uint x;
     const uint y;
     game * getGame() const {return _game;}
-
+	inline base* getBase() {return _base;}
     
     // setters:
     inline bool addTower(tower* t);
     inline bool addBase(base* t);
-    
+    bool addUnit(unit* u);
+	void remUnit(unit* u);
+
     // dijkstra helper values / functions:
     field* prev;
     double dist;

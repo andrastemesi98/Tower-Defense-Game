@@ -1,4 +1,5 @@
 #include "../Include/field.h"
+#include <algorithm>
 
 namespace model
 {
@@ -10,6 +11,20 @@ namespace model
     return false;    
   }
 
+	bool field::addUnit(unit* u)
+	{
+		if(!canBeEntered())
+    	{
+			return false;
+		}
+		_units.push_back(u);
+		return true;
+	}
+
+	void field::remUnit(unit* u)
+	{
+		_units.erase(std::remove(_units.begin(), _units.end(), u), _units.end());
+	}
 
   field* field::neighbour(uint index)
   {

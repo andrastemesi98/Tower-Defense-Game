@@ -20,10 +20,22 @@ bool unit::alive() const{
 	return _HP>0;
 }
 
-void unit::remove(){
-	//TODO
+void unit::remove()
+{
+	_loc->remUnit(this);
+	_owner->removeUnit(this);
 }
 
-
+void unit::move()
+{
+	/*find base on neighbour field
+    something like:
+    for (int i=0; i<8; ++i)
+        _loc->neighbour(i)->getBase()
+        owner is other player
+        b->take_damage(_dmg);
+	remove();
+    */
+}
 
 }

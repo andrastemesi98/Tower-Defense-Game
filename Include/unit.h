@@ -22,7 +22,7 @@ public:
     void move();
     void dijkstra();
     void take_damage(uint amount);
-
+	
     // getters:
     bool alive() const;
     inline player* owner() {return _owner;}

@@ -16,16 +16,26 @@ void player::removeUnit(unit* myUnit){
 }
 
 void player::removeTower(tower* myTower){
-        _towers.erase(std::remove(_towers.begin(), _towers.end(), myTower), _towers.end());
+        //_towers.erase(std::remove(_towers.begin(), _towers.end(), myTower), _towers.end());
+		//field* f;
+		//f=myTower->location();
+		//f->deleteTower();
+		//~myTower();
 }
 
 bool player:: placeTower(int ID, field* loc){
-	//TODO
+	//tower* t;
+	//t= new tower(this, loc, iddmg, idrng);
+	//_towers.push_back(t);
+	//return loc->addTower(t);
 	return true;
 }
 
 bool player:: placeCreature(int ID, field* loc){
-	//TODO
+	//unit* u;
+	//u= new unit(this, basefield, iddmg, idrng, idsp);
+	//_units.push_back(u);
+	//return basefield->addUnit(u);
 	return true;
 }
 
