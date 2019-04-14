@@ -11,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QApplication>
 #include <QKeyEvent>
+#include <QTimer>
 
 namespace view
 {
@@ -22,8 +23,10 @@ public:
     view(QWidget *parent = 0);
     //inline ~view() {delete _game(x, y);}
     //egyelőre a pályaméret állítható, ez kibővíthető játékmóddal
-    inline void newGame(model::uint x, model::uint y) {_game(x, y);}
+    inline void newGame(model::uint x, model::uint y)
+    {model::game _game(x, y);}
     //inline void setGameSize(model::uint x, model::uint y) {_sizex = x; _sizey = y;}
+    QTimer* _timer;
 
 public slots:
     void run();
@@ -33,6 +36,7 @@ public slots:
     void setMiddleGame();
     void setBigGame();
     void buttonClicked();
+    void update();
 
 private:
     model::game* _game(model::uint x, model::uint y);
@@ -55,8 +59,10 @@ private:
     QGridLayout* tableLayout;
 
     bool inNewgame = false, inSettings = false; //épp hol vagyunk
+    bool timerExists = false;
 
     void keyPressEvent(QKeyEvent *event);
+    uint positionx = 0, positiony = 0;
 
 };
 
