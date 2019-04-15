@@ -16,7 +16,7 @@ class path;
 class unit
 {
 public:
-    unit(player *p, field *l, uint HPin, uint dmg, uint sp);
+    unit(player *p, field *l, uint HPin, uint dmg, uint sp, field* enemy_base_loc);
     inline virtual ~unit() {}
 
     // modifying functions:
@@ -40,7 +40,7 @@ private:
     uint _HP;
     uint _dmg;
     uint _speed;
-    //path _path; // valamiért fordítási hibát ad
+    path *_path; // valamiért fordítási hibát ad
 };
 
 }

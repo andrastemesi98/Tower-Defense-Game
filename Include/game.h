@@ -23,27 +23,29 @@ public:
   inline uint sizex() const {return _fields.size();}
   inline uint sizey() const {return _fields[0].size();}
  
-  inline const std::vector<player>& players() const {return _players;}
-  inline player& getPlayer(uint index) {return _players[index];}
+  inline const std::vector<player*>& players() const {return _players;}
+  inline player& getPlayer(uint index) {return *(_players[index]);}
   
+    void update();
+
 private:
     std::vector< std::vector <field > > _fields;
-    std::vector<player> _players;
+    std::vector<player *> _players;
 };
 
 
 
  field* game::getField(uint x, uint y)
  {
-   if(x < 0 || y < 0 || x >= static_cast<uint>(_fields.size()) ||
-      y >= static_cast<uint>(_fields[0].size()) )
+   if(x >= _fields.size() || // x < 0 || y < 0
+      y >= _fields[0].size() )
      return nullptr;
    return &_fields[x][y];
  }
  
  const field* game::getField(uint x, uint y) const
  {
-   if(x < 0 || y < 0 || x >= static_cast<uint>(_fields.size()) ||
+   if(x >= static_cast<uint>(_fields.size()) ||
       y >= static_cast<uint>(_fields[0].size()) )
      return nullptr;
    return &_fields[x][y];

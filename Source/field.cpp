@@ -3,6 +3,17 @@
 
 namespace model
 {
+    bool field::addTower(tower *t) {
+        if ( ! canBeEntered()) return false;
+        _tower = t;
+        return true;
+    }
+
+    bool field::addBase(base *t) {
+        if ( ! canBeEntered()) return false;
+        _base = t;
+        return true;
+    }
 
   bool field::canBeEntered() const
   {

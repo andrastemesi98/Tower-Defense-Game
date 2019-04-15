@@ -24,7 +24,7 @@ public:
     //inline ~view() {delete _game(x, y);}
     //egyelőre a pályaméret állítható, ez kibővíthető játékmóddal
     inline void newGame(model::uint x, model::uint y)
-    {model::game _game(x, y);}
+    {_game = new model::game(x, y);}
     //inline void setGameSize(model::uint x, model::uint y) {_sizex = x; _sizey = y;}
     QTimer* _timer;
 
@@ -39,7 +39,7 @@ public slots:
     void update();
 
 private:
-    model::game* _game(model::uint x, model::uint y);
+    model::game* _game;
     //menü gombjai:
     QPushButton* _newGame;
     QPushButton* _settings;
@@ -48,7 +48,7 @@ private:
     QPushButton* _smallGame;
     QPushButton* _middleGame;
     QPushButton* _bigGame;
-    uint _sizex = 10, _sizey = 10; //pályaméret
+    uint _sizex = 11, _sizey = 11; //pályaméret
     QHBoxLayout* menu; //3 kezdőgomb
     QHBoxLayout* sizeButtons; //pályaméret gombjai egymás mellett
     QVBoxLayout* infos; //dolgok egymás alatt

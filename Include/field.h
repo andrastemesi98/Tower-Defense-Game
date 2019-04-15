@@ -6,6 +6,7 @@
 #include "base.h"
 #include "player.h"
 #include "game.h"
+#include <iostream>
 
 namespace model
 {
@@ -30,12 +31,13 @@ public:
     const uint y;
     game * getGame() const {return _game;}
     inline base* getBase() {return _base;}
+    inline tower* getTower() {return _tower;}
+    inline unit* getUnit() {if(_units.size() == 0) return nullptr; else return _units[0];}
+    inline uint unitNum() const {return _units.size();}
 
     // setters:
-    inline bool addTower(tower* t);
-    inline bool addBase(base* t);
-    bool addUnit(unit* u);
     void remUnit(unit* u);
+    bool addUnit(unit* u);
 
     // dijkstra helper values / functions:
     field* prev;
@@ -54,23 +56,10 @@ private:
     tower* _tower;
     base* _base;
     game * const _game;
+    bool addTower(tower* t);
+    bool addBase(base* t);
+    friend class player;
 };
-
- bool field::addTower(tower* t)
- {
-   if(!canBeEntered())
-     return false;
-   _tower = t;
-   return true;
- }
-
- bool field::addBase(base* t)
- {
-   if(!canBeEntered())
-     return false;
-   _base = t;
-   return true;
- }
 
 }
 

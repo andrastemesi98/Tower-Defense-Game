@@ -2,8 +2,11 @@
 
 namespace model
 {
-unit::unit(player *p, field *l, uint HPin, uint dmg, uint sp): _owner(p), _loc(l), _HP(HPin), _dmg(dmg),
-_speed(sp) {}
+unit::unit(player *p, field *l, uint HPin, uint dmg, uint sp, field* en_base_loc)
+    : _owner(p), _loc(l), _HP(HPin), _dmg(dmg),
+_speed(sp) {
+    _path = new path(l, en_base_loc);
+}
 
 //?delete from field?
 void unit::take_damage(uint amount){
@@ -28,14 +31,18 @@ void unit::remove()
 
 void unit::move()
 {
-    /*find base on neighbour field
-    something like:
-    for (int i=0; i<8; ++i)
-        _loc->neighbour(i)->getBase()
-        owner is other player
-        b->take_damage(_dmg);
-    remove();
-    */
+    _path->recheck();
+    if(++(*_path)) {
+    _path->current()->addUnit(this);
+    _loc->remUnit(this);
+    _loc = _path->current();
+    }
+    else {
+        remove();
+        if( _path->goal()->getBase() != nullptr) {
+                _path->goal()->getBase()->take_damage(_dmg);
+        }
+    }
 }
 
 }

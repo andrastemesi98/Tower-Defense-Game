@@ -16,14 +16,7 @@ class tower
 
 public:
     inline tower(player* pl, field* f, uint dmg, uint rng) : _owner(pl), _loc(f), _range(rng),
-_dmg(dmg)
-    {
-        //if(!f->addTower(this)
-        //{
-            //Hibakezeles
-        //}
-    }
-
+_dmg(dmg) { }
 
     // modifying functions:
     // void shoot(); // is not implemented yet

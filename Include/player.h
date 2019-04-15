@@ -5,18 +5,21 @@
 #include "unit.h"
 #include "tower.h"
 #include "field.h"
+#include "game.h"
 
 namespace model {
 
 class unit;
 class tower;
 class field;
+class base;
+class game;
 
 class player
 {
 
 public:
-    player(const std::string& nin, int def_gold);
+    player(int IDin, const std::string& nin, int def_gold, field* baseloc, game* gin);
 
     // modifying functions:
     void update();
@@ -33,13 +36,19 @@ public:
     inline int gold() const {return _gold;}
     inline std::vector<unit*> const& units() const {return _units;}
     inline std::vector<tower*> const& towers() const {return _towers;}
+    inline int ID() const {return _ID;}
+    inline base* getBase() {return _base;}
 
 
 private:
     std::vector<unit *> _units;
     std::vector<tower *> _towers;
+    base* _base;
     int _gold; // negatives are not excluded
     std::string _name;
+    const int _ID;
+    game* const _game;
+    friend class game;
 };
 
 }

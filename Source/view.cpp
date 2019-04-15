@@ -61,7 +61,7 @@ void view::view::run()
             }
         }
         newGame(_sizex, _sizey);
-
+        //_game = new model::game(x, y);
         if(!timerExists)
         {
             _timer = new QTimer(this);
@@ -97,14 +97,14 @@ void view::view::settings()
 
         //ha nem léteznek, akkor kell létrehozni őket:
         _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a '0'-t nyomva egységet indíthat.\n\
-A 2. játékos (zöld) a 'WASD' gombokkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, ezen 'T' jelenik meg.\n\
-A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
-Rövidítve emlékeztető:\n\
-Első (piros) játékos: torony – bal egérgomb mezőre, egység – '0'.\n\
-Második (zöld) játékos: mezőválasztás – 'WASD', torony – ’t’, egység – ’e’.");
-        infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
+                                A 2. játékos (zöld) a 'WASD' gombokkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, ezen 'T' jelenik meg.\n\
+                                A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
+                                                                                 Rövidítve emlékeztető:\n\
+                                                                                                      Első (piros) játékos: torony – bal egérgomb mezőre, egység – '0'.\n\
+                                                                                                                                                                   Második (zöld) játékos: mezőválasztás – 'WASD', torony – ’t’, egység – ’e’.");
+                                                                                                                                                                                                                                             infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
 
-        sizeButtons = new QHBoxLayout();
+                sizeButtons = new QHBoxLayout();
         _sizeLabel = new QLabel("Pályaméret:");
         _smallGame = new QPushButton("Kis pálya");
         _middleGame = new QPushButton("Közepes pálya");
@@ -129,18 +129,33 @@ void view::view::exit()
 
 void view::view::update()
 {
+    _game->update();
     for (int i = 0; i < buttonTable.size(); i++)
     {
         for(int j = 0; j < buttonTable[0].size(); j++)
         {
-            buttonTable[i][j]->setText("");
-//ha 1. játékos bázisa, akkor buttonTable[i][j]->setStyleSheet("background-color:darkRed;");
-//ha 1. játékos tornya, akkor buttonTable[i][j]->setStyleSheet("background-color:red;");
-//ha 2. játékos bázisa, akkor buttonTable[i][j]->setStyleSheet("background-color:darkGreen;");
-//ha 2. játékos tornya, akkor buttonTable[i][j]->setStyleSheet("background-color:lightGreen;");
-//ha 1. játékos egysége, akkor buttonTable[i][j]->setStyleSheet("background-color:white;");
-//ha 2. játékos egysége, akkor buttonTable[i][j]->setStyleSheet("background-color:black;");
-//ha mindkettő egysége, akkor rá kép
+            buttonTable[i][j]->setStyleSheet("background-color:Orange;");
+            buttonTable[i][j]->setText(std::to_string(_game->getField(i,j)->unitNum()).c_str());
+            model::base *bs = _game->getField(i,j)-> getBase();
+            if( bs != nullptr) {
+                switch(bs->owner()->ID()) {
+                case 0 : buttonTable[i][j]->setStyleSheet("background-color:darkRed;"); break;
+                case 1 : buttonTable[i][j]->setStyleSheet("background-color:darkGreen;"); break;
+                }
+              buttonTable[i][j]->setText(std::to_string(bs->HP()).c_str());
+            }
+            auto tw = _game->getField(i,j)-> getTower();
+            if( tw != nullptr)
+                switch(tw->owner()->ID()) {
+                case 0 : buttonTable[i][j]->setStyleSheet("background-color:Red;"); break;
+                case 1 : buttonTable[i][j]->setStyleSheet("background-color:LightGreen;"); break;
+                }
+            auto un = _game->getField(i,j)-> getUnit();
+            if( un != nullptr)
+                switch(un->owner()->ID()) {
+                case 0 : buttonTable[i][j]->setStyleSheet("background-color:white;"); break;
+                case 1 : buttonTable[i][j]->setStyleSheet("background-color:black;"); break;
+                }
         }
     }
     buttonTable[positionx][positiony]->setText("T");
@@ -148,20 +163,20 @@ void view::view::update()
 
 void view::view::setSmallGame()
 {
-    _sizex = 10;
-    _sizey = 10;
+    _sizex = 11;
+    _sizey = 11;
 }
 
 void view::view::setMiddleGame()
 {
-    _sizex = 20;
-    _sizey = 20;
+    _sizex = 21;
+    _sizey = 21;
 }
 
 void view::view::setBigGame()
 {
-    _sizex = 30;
-    _sizey = 30;
+    _sizex = 31;
+    _sizey = 31;
 }
 
 void view::view::buttonClicked()
@@ -170,6 +185,7 @@ void view::view::buttonClicked()
     uint a, b;
     a = nr / _sizex;
     b = nr % _sizex;
+    _game->getPlayer(0).placeTower(0, _game->getField(a, b));
     //game-nek az a fv-e, ami 1. játékosnak (a,b)-re tornyot rak
 }
 
@@ -179,6 +195,7 @@ void view::view::keyPressEvent(QKeyEvent *event)
     {
         if(event->key() == Qt::Key_0)
         {
+            _game->getPlayer(0).placeCreature(0, _game->getField(0,0));
             //game-nek az a fv-e, amelyik indít 1. játékosnak unitot
         }
         if(event->key() == Qt::Key_W)
