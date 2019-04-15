@@ -30,11 +30,44 @@ game::game(uint xin, uint yin)
         std::cout << std::endl << std::flush;
     }
     //std::cerr << _players[0]->_base->owner() << " vs " << &_players[0] << std::endl;
+
+    // creating the timer :
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer->start(200);
 }
 
 void game::update()
 {
+    std::cerr << "update function\n";
     for(auto p : _players) p->update();
+}
+
+/*
+  the meaning of "num" (where F is the current field):
+  123
+  4F5
+  678
+ */
+field* getNeighbourToPlusY(field* f) {
+    for(uint i = 8; i >= 1; --i)
+        if ( f->neighbour(i) != nullptr && f->neighbour(i)->canBeEntered()) return f->neighbour(i);
+    return nullptr;
+}
+
+field* getNeighbourToMinusY(field* f) {
+    for(uint i = 1; i <= 8; ++i)
+        if ( f->neighbour(i) != nullptr && f->neighbour(i)->canBeEntered()) return f->neighbour(i);
+    return nullptr;
+}
+
+void game::placeCreature(uint player_index) {
+    field * start = nullptr;
+    if( player_index % 2 == 0)
+        start = getNeighbourToPlusY(getPlayer(player_index).getBase()->location());
+    else start = getNeighbourToMinusY(getPlayer(player_index).getBase()->location());
+    if(start == nullptr) throw "Can not place creature!! ( no room) ";
+    getPlayer(player_index).placeCreature(0, start);
 }
 
 }

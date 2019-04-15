@@ -79,18 +79,19 @@ path::path(field* startin, field* goalin) : _goal(goalin), _current(0)
 
 bool path::check() const
 {
-    // !!! does not check the last element of "_fields", as the "goal filed"
-    // usually is occupied by the enemy base
+    //std::cerr << "current0 = " << _fields[_current]->x << ";" << _fields[_current]->y << std::endl;0
     for(uint i = _current+1; i < _fields.size() -1; ++i)
         if(! _fields[i]->canBeEntered())
             return false;
     return true;
 }
 
-void path::recheck()
+bool path::recheck()
 {
     if(! check() )
-        recalculate();
+        if( ! recalculate() )
+            return false;
+    return true;
 }
 
 bool path::operator++()
@@ -102,10 +103,14 @@ bool path::operator++()
     return true;
 }
 
-void path::recalculate()
+bool path::recalculate()
 {
     field* f = _fields[_current];
-    dijkstra(_fields, f, _goal);
+    _fields.resize(0);
+    _current = 0;
+    bool b = dijkstra(_fields, f, _goal);
+    //std::cerr << "needs recheck ... current= " << _fields[_current]->x << ";" <<  _fields[_current]->y << std::endl;
+    return b;
 }
 
 }

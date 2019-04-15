@@ -129,13 +129,13 @@ void view::view::exit()
 
 void view::view::update()
 {
-    _game->update();
+    //_game->update();
     for (int i = 0; i < buttonTable.size(); i++)
     {
         for(int j = 0; j < buttonTable[0].size(); j++)
         {
+            buttonTable[i][j]->setText("");
             buttonTable[i][j]->setStyleSheet("background-color:Orange;");
-            buttonTable[i][j]->setText(std::to_string(_game->getField(i,j)->unitNum()).c_str());
             model::base *bs = _game->getField(i,j)-> getBase();
             if( bs != nullptr) {
                 switch(bs->owner()->ID()) {
@@ -151,11 +151,13 @@ void view::view::update()
                 case 1 : buttonTable[i][j]->setStyleSheet("background-color:LightGreen;"); break;
                 }
             auto un = _game->getField(i,j)-> getUnit();
-            if( un != nullptr)
+            if( un != nullptr) {
                 switch(un->owner()->ID()) {
                 case 0 : buttonTable[i][j]->setStyleSheet("background-color:white;"); break;
                 case 1 : buttonTable[i][j]->setStyleSheet("background-color:black;"); break;
                 }
+                buttonTable[i][j]->setText(std::to_string(_game->getField(i,j)->unitNum()).c_str());
+             }
         }
     }
     buttonTable[positionx][positiony]->setText("T");
@@ -195,8 +197,7 @@ void view::view::keyPressEvent(QKeyEvent *event)
     {
         if(event->key() == Qt::Key_0)
         {
-            _game->getPlayer(0).placeCreature(0, _game->getField(0,0));
-            //game-nek az a fv-e, amelyik indít 1. játékosnak unitot
+            _game->placeCreature(0);
         }
         if(event->key() == Qt::Key_W)
         {
@@ -217,9 +218,11 @@ void view::view::keyPressEvent(QKeyEvent *event)
         if(event->key() == Qt::Key_T)
         {
             //game-nek az a fv-e, ami 2. játékosnak (posx, posy)-ra tornyot rak
+            _game->getPlayer(1).placeTower(0, _game->getField(positionx, positiony));
         }
         if(event->key() == Qt::Key_E)
         {
+            _game->placeCreature(1);
             //game-nek az a fv-e, amelyik indít 2. játékosnak unitot
         }
     }

@@ -20,6 +20,7 @@ class player
 
 public:
     player(int IDin, const std::string& nin, int def_gold, field* baseloc, game* gin);
+    virtual ~player();
 
     // modifying functions:
     void update();
@@ -39,16 +40,18 @@ public:
     inline int ID() const {return _ID;}
     inline base* getBase() {return _base;}
 
-
 private:
     std::vector<unit *> _units;
+    std::vector<unit *> _removed_units;
     std::vector<tower *> _towers;
+    std::vector<tower *> _removed_towers;
     base* _base;
     int _gold; // negatives are not excluded
     std::string _name;
     const int _ID;
     game* const _game;
     friend class game;
+    player* getEnemyPlayer();
 };
 
 }

@@ -31,7 +31,10 @@ void unit::remove()
 
 void unit::move()
 {
-    _path->recheck();
+    if ( ! _path->recheck() ) { // if there is no path left to the goal -> the unit is destroyed
+        remove();
+        return;
+    }
     if(++(*_path)) {
     _path->current()->addUnit(this);
     _loc->remUnit(this);

@@ -39,6 +39,7 @@ public:
     void remUnit(unit* u);
     bool addUnit(unit* u);
 
+    // DIJKSTRA INFORMATION IS NOT THREAD-SAFE !!!!!!!!!!!
     // dijkstra helper values / functions:
     field* prev;
     double dist;

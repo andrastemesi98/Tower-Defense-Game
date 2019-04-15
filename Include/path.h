@@ -21,7 +21,7 @@ public:
     inline field* current() {return _fields[_current];}
     
     // modifiers:    
-    void recheck(); // checks and recalculates if neccessary
+    bool recheck(); // checks and recalculates if neccessary
     bool operator++();
 
     
@@ -31,7 +31,7 @@ private:
     uint _current; // index of the current field;
 
     bool check() const;
-    void recalculate(); // called by "recheck()" by default
+    bool recalculate(); // called by "recheck()" by default
 };
 
  bool dijkstra(std::vector<field* >& fields, field* start, field* goal);
