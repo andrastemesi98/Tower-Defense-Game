@@ -30,8 +30,13 @@ public:
     inline player& getPlayer(uint index) {return *(_players[index]);}
 
     void placeCreature(uint player_index);
+
 public slots:
     void update();
+
+signals:
+    void goldChanged(QString message);
+
 private:
     std::vector< std::vector <field > > _fields;
     std::vector<player *> _players;
