@@ -25,7 +25,6 @@ public:
     //egyelőre a pályaméret állítható, ez kibővíthető játékmóddal
     inline void newGame(model::uint x, model::uint y)
     {_game = new model::game(x, y);}
-    //inline void setGameSize(model::uint x, model::uint y) {_sizex = x; _sizey = y;}
     QTimer* _timer;
 
 public slots:
@@ -54,6 +53,7 @@ private:
     QVBoxLayout* infos; //dolgok egymás alatt
     QLabel* _infoLabel; //settingsben leírás, hogy hogyan kell játszani
     QLabel* _sizeLabel; //settingsben "Pályaméret:"
+    QLabel* _golds;
 
     QVector<QVector<QPushButton*>> buttonTable; //Új játékban a tábla
     QGridLayout* tableLayout;
@@ -62,7 +62,7 @@ private:
     bool timerExists = false;
 
     void keyPressEvent(QKeyEvent *event);
-    uint positionx = 0, positiony = 0;
+    uint positionx = _sizex / 2, positiony = _sizey - 2; //T a zöld bázis előtt
 
 };
 
