@@ -87,9 +87,10 @@ void view::view::settings()
         {
             _timer->stop();
             timerExists = false;
+            delete _golds;
         }
 
-        delete _golds;
+
         for (int i = 0; i < buttonTable.size(); i++)
         {
             for(int j = 0; j < buttonTable[0].size(); j++)
@@ -100,11 +101,11 @@ void view::view::settings()
         }
 
         //ha nem léteznek, akkor kell létrehozni őket:
-        _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a '0'-t nyomva egységet indíthat.\n\
+        _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a 'p'-t nyomva egységet indíthat.\n\
 A 2. játékos (zöld) a 'WASD' gombokkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, ezen 'T' jelenik meg.\n\
 A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
 Rövidítve emlékeztető:\n\
-Első (piros) játékos: torony – bal egérgomb mezőre, egység – '0'.\n\
+Első (piros) játékos: torony – bal egérgomb mezőre, egység – 'p'.\n\
 Második (zöld) játékos: mezőválasztás – 'WASD', torony – ’t’, egység – ’e’.");
         infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
 
@@ -206,7 +207,7 @@ void view::view::keyPressEvent(QKeyEvent *event)
 {
     if(inNewgame)
     {
-        if(event->key() == Qt::Key_0)
+        if(event->key() == Qt::Key_P)
         {
             _game->placeCreature(0);
         }
@@ -239,6 +240,7 @@ void view::view::keyPressEvent(QKeyEvent *event)
 
 void view::view::viewOver(int ID){
     _timer->stop();
-    std::string message="Nyert a következő játékos:(0-bal/1-jobb) " + std::to_string(ID);
-    QMessageBox::information(this, "Vége", message.c_str());
+    if(ID == 0) QMessageBox::information(this, "Vége", "Nyert a piros játékos!");
+    if(ID == 1) QMessageBox::information(this, "Vége", "Nyert a zöld játékos!");
+    settings();
 }
