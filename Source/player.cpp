@@ -25,8 +25,14 @@ void player::addGold(int amount){
 
 }
 
+void player::spendGold(int amount){
+    _gold-=amount;
+    _game->goldChanged("1. játékos aranya: " + QString::number(_game->getPlayer(0)._gold) + ", 2. játékos aranya: " + QString::number(_game->getPlayer(1)._gold));
+}
+
 void player::removeUnit(unit* myUnit) {
     _removed_units.push_back(myUnit);
+    addGold(20);
     //_units.erase(std::remove(_units.begin(), _units.end(), myUnit), _units.end());
 }
 
@@ -49,27 +55,37 @@ player* player::getEnemyPlayer() {
 
 std::vector<field*> buf;
 bool player:: placeTower(int ID, field* loc){
-    tower *t = new tower(this, loc, 1, 1);
-    _towers.push_back(t);
-    bool b = loc->addTower(t);
-    if( ! b ) return false;
-    // remove tower if neccessary:
-    if ( ! dijkstra(buf, _base->location(), getEnemyPlayer()->_base->location()) ) {
-        _towers.resize( _towers.size() -1 );
-        loc->_tower = nullptr;
-        delete t;
+    if(_gold>=100){
+        tower *t = new tower(this, loc, 1, 1);
+        _towers.push_back(t);
+        bool b = loc->addTower(t);
+        if( ! b ) return false;
+        // remove tower if neccessary:
+        if ( ! dijkstra(buf, _base->location(), getEnemyPlayer()->_base->location()) ) {
+            _towers.resize( _towers.size() -1 );
+            loc->_tower = nullptr;
+            delete t;
+            return false;
+        }
+        spendGold(100);
+        return true;
+    } else {
         return false;
     }
-    return true;
 }
 
 bool player:: placeCreature(int ID, field* loc){
-    player* enemy = getEnemyPlayer();
-    //std::cerr << "Enemy base location = " << enemy->_base->location()->x <<";" <<  enemy->_base->location()->y << std::endl;
-    unit *u= new unit(this, loc, 1, 1, 1, enemy->_base->location());
-    //std::cerr << "ldsfhdfhk\n";
-    _units.push_back(u);
-    return loc->addUnit(u);
+    if(_gold>=100){
+        player* enemy = getEnemyPlayer();
+        //std::cerr << "Enemy base location = " << enemy->_base->location()->x <<";" <<  enemy->_base->location()->y << std::endl;
+        unit *u= new unit(this, loc, 1, 1, 1, enemy->_base->location());
+        //std::cerr << "ldsfhdfhk\n";
+        _units.push_back(u);
+        spendGold(100);
+        return loc->addUnit(u);
+    } else{
+        return false;
+    }
 }
 
 void player::update(){
@@ -83,6 +99,10 @@ void player::update(){
     for( auto u : _removed_units) {
         _units.erase(std::remove(_units.begin(), _units.end(), u), _units.end());
     }
+    for( auto t: _towers) {
+        t->shoot();
+    }
+    addGold(1);
 }
 
 }

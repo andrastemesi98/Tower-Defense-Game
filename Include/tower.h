@@ -8,18 +8,18 @@
 namespace model
 {
 
-class player;
 class field;
+class player;
 
 class tower
 {
 
 public:
     inline tower(player* pl, field* f, uint dmg, uint rng) : _owner(pl), _loc(f), _range(rng),
-_dmg(dmg) { }
+        _dmg(dmg) { }
 
     // modifying functions:
-    // void shoot(); // is not implemented yet
+    void shoot();
 
     // getters:
     inline player* owner() {return _owner;}
@@ -38,5 +38,6 @@ private:
 };
 
 }
+
 
 #endif // TOWER_H

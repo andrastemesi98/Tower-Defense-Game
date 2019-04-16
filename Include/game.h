@@ -36,6 +36,7 @@ public slots:
 
 signals:
     void goldChanged(QString message);
+    void gameOver(int winnerID);
 
 private:
     std::vector< std::vector <field > > _fields;

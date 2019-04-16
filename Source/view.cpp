@@ -37,7 +37,7 @@ void view::view::run()
     if(!inNewgame)
     {
         inNewgame = true;
-        _golds = new QLabel("1. játékos aranya: 100, 2. játékos aranya: 100");
+        _golds = new QLabel("1. játékos aranya: 1000 2. játékos aranya: 1000");
         _golds->setFixedSize(900, 30);
         infos->addWidget(_golds, 0, Qt::AlignHCenter);
 
@@ -73,6 +73,7 @@ void view::view::run()
         newGame(_sizex, _sizey);
         //_game = new model::game(x, y);
         connect(_game, SIGNAL(goldChanged(QString)), _golds, SLOT(setText(QString)));
+        connect(_game, SIGNAL(gameOver(int)), this, SLOT(viewOver(int)));
     }
 }
 
@@ -164,6 +165,8 @@ void view::view::update()
         }
     }
     buttonTable[positionx][positiony]->setText("T");
+    //std::string labelText="1. játékos aranya: " + std::to_string(_game->players()[0]->gold()) + " || 2. játékos aranya: " + std::to_string(_game->players()[1]->gold());
+    //_golds->setText(labelText.c_str());
 }
 
 void view::view::setSmallGame()
@@ -232,4 +235,10 @@ void view::view::keyPressEvent(QKeyEvent *event)
             _game->placeCreature(1);
         }
     }
+}
+
+void view::view::viewOver(int ID){
+    _timer->stop();
+    std::string message="Nyert a következő játékos:(0-bal/1-jobb) " + std::to_string(ID);
+    QMessageBox::information(this, "Vége", message.c_str());
 }

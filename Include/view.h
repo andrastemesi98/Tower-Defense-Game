@@ -36,6 +36,7 @@ public slots:
     void setBigGame();
     void buttonClicked();
     void update();
+    void viewOver(int ID);
 
 private:
     model::game* _game;

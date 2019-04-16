@@ -16,9 +16,9 @@ game::game(uint xin, uint yin)
             column.emplace_back(i, j, this);
         _fields.push_back(column);
     }
-    player* pl = new player(0, "player1", 0, getField(_fields.size()/2, 0), this);
+    player* pl = new player(0, "player1", 1000, getField(_fields.size()/2, 0), this);
     _players.push_back(pl);
-    player* pl2 = new player(1, "player2", 0, getField(_fields.size()/2, _fields[0].size()-1), this);
+    player* pl2 = new player(1, "player2", 1000, getField(_fields.size()/2, _fields[0].size()-1), this);
     _players.push_back(pl2);
     //_players.emplace_back(0, "player1", 0, getField(5, 5));
     for( auto& pl : _players)
@@ -32,15 +32,21 @@ game::game(uint xin, uint yin)
     //std::cerr << _players[0]->_base->owner() << " vs " << &_players[0] << std::endl;
 
     // creating the timer :
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer->start(200);
+    _timer = new QTimer(this);
+    connect(_timer, SIGNAL(timeout()), this, SLOT(update()));
+    _timer->start(200);
 }
 
 void game::update()
 {
     std::cerr << "update function\n";
     for(auto p : _players) p->update();
+    for(auto p : _players) {
+        if(!p->getBase()->check()){
+            _timer->stop();
+            gameOver(p->getEnemyPlayer()->ID());
+        }
+    }
 }
 
 /*

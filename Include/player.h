@@ -28,6 +28,7 @@ public:
     void removeUnit(unit*);
     void removeTower(tower*);
     void addGold(int amount);
+    void spendGold(int amount);
     bool placeCreature(int ID, field* loc);
     // placeCreature(..) actually creates the creature from ID
     bool placeTower(int ID, field* loc);
