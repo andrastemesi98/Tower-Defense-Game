@@ -155,6 +155,12 @@ void view::view::run()
         delete _smallGame;
         delete _middleGame;
         delete _bigGame;
+        delete _localGame;
+        delete _networkGame;
+        for(int i = 0; i < _connectedClients.size(); i++)
+        {
+            delete _connectedClients[i];
+        }
         inSettings = false;
     }
 
@@ -255,6 +261,7 @@ void view::view::settings()
         connect(_networkGame, SIGNAL(clicked()), this, SLOT(onMultiplayerClicked()));
 
         mode = new QVBoxLayout();
+        _connectedClients.resize(0);
         for(int i = 0; i <= 3; i++) //ahányan csatlakoztak már, other_clients size-a
         {
             _connectedClients.append(new QPushButton);
