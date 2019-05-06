@@ -8,12 +8,15 @@ INCLUDEPATH += .
 
 QT += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += network
 
 # The following define makes your compiler warn you if you use any
 # feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+
+CONFIG += C++11
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -29,7 +32,8 @@ HEADERS += Include/base.h \
            Include/player.h \
            Include/tower.h \
            Include/unit.h \
-           Include/view.h
+           Include/view.h \
+           Include/server.h
 SOURCES += Source/base.cpp \
            Source/field.cpp \
            Source/game.cpp \
@@ -38,4 +42,5 @@ SOURCES += Source/base.cpp \
            Source/player.cpp \
            Source/tower.cpp \
            Source/unit.cpp \
-           Source/view.cpp
+           Source/view.cpp \
+           Source/server.cpp

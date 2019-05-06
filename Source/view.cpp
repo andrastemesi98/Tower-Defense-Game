@@ -1,5 +1,123 @@
 #include "../Include/view.h"
 #include <QMessageBox>
+#include <QTextStream>
+
+//--------------------------------------------------------------------------------
+// Networking rész:
+//--------------------------------------------------------------------------------
+void view::view::onMultiplayerClicked() {
+    // POPUP megjelenítése: "csatlakozás a szerverhez"
+    socket->connectToHost(address, 4200); // BIZTOS HOGY 4200 ??? MI JÖN IDE?
+}
+
+// ha sikeres a csatlakozás a szerverre:
+void view::view::connected() {
+    // BELÉPNI A MULTIPLAYER MENÜ-VIEW-BA
+
+    // LEKÉRNI A MÁR AKTÍV CLIENTEKET A SZERVERRŐL
+}
+
+void view::view::NETW_back_from_multiplayer_clicked()
+{
+    other_clients.resize(0);
+    // a client nickname megmarad
+    // üzenünk a szervernek, hogy lecsatlakozunk róla:
+    socket->write((QString("CLIENT_LEAVE ") + QString::number(client_ID)).toUtf8());
+    // socket->disconnect() // Disconnectelünk a socket-ről. =>  ez nem kell!!
+    client_ID = -1;
+    // BELÉPNI A FŐMENÜ VIEW-BA
+}
+
+void view::view::NETW_start_game_button_clicked(int index) {
+    // ESETLEG: POPUP ABLAK, ÜZENETE: "Várakozás a másik játékos válaszára."
+    // <= de ennek még nincs meg a struktúrája a szerverben
+    // elküldeni a szerver-nek a "játékindítási szándékot":
+    socket->write((QString("START_GAME") + QString::number(other_clients[index].first)).toUtf8());
+    // az ID, amit küldünk: annak a clientnek az ID-ja, akire rákattintottunk
+    // (azaz: at indexedik other_client ID-ja).
+}
+
+// ha olyan signalt kap, hogy van mit beolvasni a host-ról:
+void view::view::readyRead() {
+    while(socket->canReadLine())
+    {
+        // Beolvassuk a sorokat:
+        QString line = QString::fromUtf8(socket->readLine()).trimmed();
+        QTextStream str(&line);
+        QString buf;
+        str >> buf;
+        if(buf == "FAIL_START_GAME") {
+            // VISSZA A FŐMENÜBE
+            // => ILYENKOR A MULTIPLAYER-ADATOKAT (kivéve nickname) TÖRÖLNI KELL!!
+        }
+        // ha sikeres volt a "játékindítási szándék:
+        else if( buf == "SUCCESS_START_GAME") {
+            // JÁTÉK VIEW MEGNYITÁSA
+        }
+        else if( buf == "MESSAGE_QUIT") {
+            // POPUP ABLAK MEGNYITÁSA, üzenettel ("Megszakadt a kapcsolat a másik játékos oldalán")
+            // VISSZA A FŐMENÜBE
+        }
+        // ha kiosztottak neki egy ID-t:
+        else if ( buf == "ID") {
+            // beolvassa a kiosztott ID-ját:
+            str >> client_ID;
+            // elküldi a nickname-jét
+            socket->write((QString("NICKNAME ") + QString::number(client_ID) +
+                           QString(" ") + client_nickname).toUtf8());
+        }
+        // ha van egy új játékos:
+        else if ( buf == "NEW_CLIENT") {
+            int clid;
+            QString nickn;
+            // új client ID-ját beolvassuk:
+            str >> clid;
+            if( clid == client_ID) // ha "mi" vagyunk az új client => semmit se csinálunk
+                continue;
+            // új client nickname-jét beolvassuk:
+            str >> nickn;
+            std::pair<int, QString> p(clid, nickn);
+            // ellenőrizni, hogy nincs-e véletlenül azonos ID-jú client már a menüben:
+            bool found = false;
+            for(auto& p : other_clients)
+                if(p.first == clid) {
+                    found = true;
+                    if(p.second != nickn)
+                        break; // ha már valahogy hozzá volt adva korábban azonos nickname-el => minden ok
+                    else p.second = nickn; // átírjuk a korábbi adatot az új nickname-re.
+                }
+            if(! found) // ha még nem volt ilyen ID-jú client:
+            {
+                other_clients.push_back(p);
+                // A VIEW-T MEGVÁLTOZTATNI: JELENJEN MEG A MULTIPLAYER MENÜBEN AZ ÚJ SOR,
+                // AMI AZ ÚJ CLIENTHEZ TARTOZIK !!!
+            }
+        }
+        else if ( buf == "CLIENT_LEFT") {
+            int clid;
+            str >> clid;
+            if(clid == client_ID) // ha mi magunk hagytuk el => semmit se csinálunk
+                continue;
+            int index = -1;
+            for(unsigned int i = 0; i < other_clients.size(); ++i)
+                if(other_clients[i].first == clid) {
+                    index = i;
+                    break;
+                }
+            // KIVENNI A VIEW-BÓL AZ index-EDIK SORT A MULTIPLAYER_MENÜ CLIENTJEI KÖZÜL
+            other_clients.erase(other_clients.begin() + index); // kitöröljük az index-edik other clientet.
+        }
+        else {
+            // POPUP MEGJELENIK, RAJTA: "ismeretlen üzenet a szervertől: " és a szerver üzenete.
+
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------
+// Networking rész vége.
+//--------------------------------------------------------------------------------
+
 
 view::view::view(QWidget *parent) : QWidget(parent)
 {
@@ -19,6 +137,10 @@ view::view::view(QWidget *parent) : QWidget(parent)
     menu->addWidget(_exit);
     infos->addLayout(menu);
     setLayout(infos);
+    // A networkingért felelős rész:
+    socket = new QTcpSocket(this);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    connect(socket, SIGNAL(connected()), this, SLOT(connected()));
 }
 
 void view::view::run()
@@ -102,12 +224,12 @@ void view::view::settings()
 
         //ha nem léteznek, akkor kell létrehozni őket:
         _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a 'p'-t nyomva egységet indíthat.\n\
-A 2. játékos (zöld) a 'WASD' gombokkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, ezen 'T' jelenik meg.\n\
-A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
-Rövidítve emlékeztető:\n\
-Első (piros) játékos: torony – bal egérgomb mezőre, egység – 'p'.\n\
-Második (zöld) játékos: mezőválasztás – 'WASD', torony – ’t’, egység – ’e’.");
-        infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
+                                A 2. játékos (zöld) a 'WASD' gombokkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, ezen 'T' jelenik meg.\n\
+                                A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
+                                                                                 Rövidítve emlékeztető:\n\
+                                                                                                      Első (piros) játékos: torony – bal egérgomb mezőre, egység – 'p'.\n\
+                                                                                                                                                                   Második (zöld) játékos: mezőválasztás – 'WASD', torony – ’t’, egység – ’e’.");
+                                                                                                                                                                                                                                             infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
 
                 sizeButtons = new QHBoxLayout();
         _sizeLabel = new QLabel("Pályaméret:");
@@ -147,7 +269,7 @@ void view::view::update()
                 case 0 : buttonTable[i][j]->setStyleSheet("background-color:darkRed; color:white;"); break;
                 case 1 : buttonTable[i][j]->setStyleSheet("background-color:darkGreen; color:white;"); break;
                 }
-              buttonTable[i][j]->setText(std::to_string(bs->HP()).c_str());
+                buttonTable[i][j]->setText(std::to_string(bs->HP()).c_str());
             }
             auto tw = _game->getField(i,j)-> getTower();
             if( tw != nullptr)
@@ -162,7 +284,7 @@ void view::view::update()
                 case 1 : buttonTable[i][j]->setStyleSheet("background-color:black; color:white;"); break;
                 }
                 buttonTable[i][j]->setText(std::to_string(_game->getField(i,j)->unitNum()).c_str());
-             }
+            }
         }
     }
     buttonTable[positionx][positiony]->setText("T");
