@@ -28,10 +28,11 @@ void view::view::NETW_back_from_multiplayer_clicked()
     // BELÉPNI A FŐMENÜ VIEW-BA
 }
 
-void view::view::NETW_start_game_button_clicked(int index) {
+void view::view::NETW_start_game_button_clicked() {
     // ESETLEG: POPUP ABLAK, ÜZENETE: "Várakozás a másik játékos válaszára."
     // <= de ennek még nincs meg a struktúrája a szerverben
     // elküldeni a szerver-nek a "játékindítási szándékot":
+    uint index = mode->indexOf(qobject_cast<QPushButton*>(sender())); //melyik indexű játékosra kattintottunk
     socket->write((QString("START_GAME") + QString::number(other_clients[index].first)).toUtf8());
     // az ID, amit küldünk: annak a clientnek az ID-ja, akire rákattintottunk
     // (azaz: at indexedik other_client ID-ja).
@@ -150,6 +151,7 @@ void view::view::run()
     {
         delete _infoLabel;
         delete _sizeLabel;
+        delete _modeLabel;
         delete _smallGame;
         delete _middleGame;
         delete _bigGame;
@@ -223,15 +225,15 @@ void view::view::settings()
         }
 
         //ha nem léteznek, akkor kell létrehozni őket:
-        _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a 'p'-t nyomva egységet indíthat.\n\
-                                A 2. játékos (zöld) a 'WASD' gombokkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, ezen 'T' jelenik meg.\n\
-                                A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n\
-                                                                                 Rövidítve emlékeztető:\n\
-                                                                                                      Első (piros) játékos: torony – bal egérgomb mezőre, egység – 'p'.\n\
-                                                                                                                                                                   Második (zöld) játékos: mezőválasztás – 'WASD', torony – ’t’, egység – ’e’.");
-                                                                                                                                                                                                                                             infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
+        _infoLabel = new QLabel("Az 1. játékos (piros) az egér bal gombjával tornyot helyezhet le adott mezőre, a 'p'-t nyomva egységet indíthat.\n"
+                                "A 2. játékos (zöld) a 'WASD' gombokkal lépkedve kiválaszthatja a mezőt, melyre tornyot akar építeni, ezen 'T' jelenik meg.\n"
+                                "A ’t’ gomb megnyomására megépül a torony. Az ’e’ gomb megnyomására 1 egység indul a bázisából.\n"
+                                "Rövidítve emlékeztető:\n"
+                                "Első (piros) játékos: torony – bal egérgomb mezőre, egység – 'p'.\n"
+                                "Második (zöld) játékos: mezőválasztás – 'WASD', torony – ’t’, egység – ’e’.");
+        infos->addWidget(_infoLabel, 0, Qt::AlignHCenter);
 
-                sizeButtons = new QHBoxLayout();
+         sizeButtons = new QHBoxLayout();
         _sizeLabel = new QLabel("Pályaméret:");
         _smallGame = new QPushButton("Kis pálya");
         _middleGame = new QPushButton("Közepes pálya");
@@ -245,6 +247,27 @@ void view::view::settings()
         sizeButtons->addWidget(_middleGame);
         sizeButtons->addWidget(_bigGame);
         infos->addLayout(sizeButtons);
+
+        modeButtons = new QHBoxLayout();
+        _modeLabel = new QLabel("Játékmód:");
+        _localGame = new QPushButton("Helyi");
+        _networkGame = new QPushButton("Hálózati");
+        connect(_networkGame, SIGNAL(clicked()), this, SLOT(onMultiplayerClicked()));
+
+        mode = new QVBoxLayout();
+        for(int i = 0; i <= 3; i++) //ahányan csatlakoztak már, other_clients size-a
+        {
+            _connectedClients.append(new QPushButton);
+            _connectedClients[i]->setText((QString("ID ") + QString::number(i)).toUtf8());
+            mode->addWidget(_connectedClients[i]);
+            connect(_connectedClients[i], SIGNAL(clicked()), this, SLOT(NETW_start_game_button_clicked()));
+        }
+
+        modeButtons->addWidget(_modeLabel);
+        modeButtons->addWidget(_localGame);
+        modeButtons->addWidget(_networkGame);
+        modeButtons->addLayout(mode);
+        infos->addLayout(modeButtons);
     }
 }
 
