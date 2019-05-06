@@ -93,11 +93,11 @@ void player::update(){
         std::cerr << "position of unit " << i << " of player " << this->ID() << ": " <<
                      _units[i]->location()->x << ";" << _units[i]->location()->y << std::endl;
     }
-    for(auto u : _units) {
-        u->move();
-    }
     for( auto u : _removed_units) {
         _units.erase(std::remove(_units.begin(), _units.end(), u), _units.end());
+    }
+    for(auto u : _units) {
+        u->move();
     }
     for( auto t: _towers) {
         t->shoot();
