@@ -55,9 +55,15 @@ private:
     uint _sizex = 11, _sizey = 11; //pályaméret
     QHBoxLayout* menu; //3 kezdőgomb
     QHBoxLayout* sizeButtons; //pályaméret gombjai egymás mellett
+    QHBoxLayout* modeButtons; //játékmód gombjai egymás mellett
     QVBoxLayout* infos; //dolgok egymás alatt
     QLabel* _infoLabel; //settingsben leírás, hogy hogyan kell játszani
     QLabel* _sizeLabel; //settingsben "Pályaméret:"
+    QLabel* _modeLabel; //settingsben "Játékmód:"
+    QVBoxLayout* mode; //csatlakozott emberek egymás alatt
+    QVector<QPushButton*> _connectedClients; //előző vektora
+    QPushButton* _localGame;
+    QPushButton* _networkGame;
     QLabel* _golds;
 
     QVector<QVector<QPushButton*>> buttonTable; //Új játékban a tábla
@@ -82,9 +88,9 @@ private slots:
     void onMultiplayerClicked(); // Ha a főmenüben megnyomták a multiplayer gombot.
     void readyRead(); // Ha van mit beolvasni a serverről.
     void connected(); // Ha sikeres a csatlakozás a serverre => bekerülünk a multiplayer menübe.
-    void NETW_start_game_button_clicked(int index);
-    // ha megnyomták az index-edik multiplayer menüben lévő játékos start game gombját =>
-    // => beindul a játék az adott játékossal.
+    void NETW_start_game_button_clicked();
+    // ha megnyomták az index-edik multiplayer menüben lévő játékos start game gombját,
+    // amit lekér a függvényen belül => beindul a játék az adott játékossal.
     void NETW_back_from_multiplayer_clicked();
     // ha megnyomtuk a "vissza a főmenübe" gombot a multiplayer ablakban.
     // => lecsatlakozunk a szerverről, töröljük az itt tárolt adatokat.
