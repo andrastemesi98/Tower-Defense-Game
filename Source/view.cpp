@@ -1,6 +1,11 @@
 #include "../Include/view.h"
 #include <QMessageBox>
 
+/**
+ * View class constructor
+ *
+ * Creates view object
+ */
 view::view::view(QWidget *parent) : QWidget(parent)
 {
     resize(900, 900);

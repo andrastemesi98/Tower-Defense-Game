@@ -2,6 +2,11 @@
 
 namespace model
 {
+/**
+ * Unit class constructor
+ *
+ * Creates unit object
+ */
 unit::unit(player *p, field *l, uint HPin, uint dmg, uint sp, field* en_base_loc)
     : _owner(p), _loc(l), _HP(HPin), _dmg(dmg),
 _speed(sp) {

@@ -2,6 +2,11 @@
 
 namespace model
 {
+/**
+ * Base class constructor
+ *
+ * Creates base object
+ */
 base::base(player* pl, field* f, uint HPin): _owner(pl), _loc(f), _HP(HPin)
 { }
 

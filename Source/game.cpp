@@ -4,7 +4,11 @@
 
 namespace model
 {
-// must be extended later so that the "_players" vector is filled as well
+/**
+ * Game class constructor
+ *
+ * Creates game object
+ */
 game::game(uint xin, uint yin)
 {
     if(xin < 1) xin = 1;
