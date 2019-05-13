@@ -40,7 +40,12 @@ game::game(uint xin, uint yin)
     connect(_timer, SIGNAL(timeout()), this, SLOT(update()));
     _timer->start(200);
 }
-
+/** @brief Calls update for every player.
+ *
+ *  Checks if every base is alive.
+ *
+ *  @return Void.
+ */
 void game::update()
 {
     std::cerr << "update function\n";
@@ -70,7 +75,11 @@ field* getNeighbourToMinusY(field* f) {
         if ( f->neighbour(i) != nullptr && f->neighbour(i)->canBeEntered()) return f->neighbour(i);
     return nullptr;
 }
-
+/** @brief Places unit for a player.
+ *
+ *  @param player_index. Represents the player, that is placing the unit
+ *  @return Void.
+ */
 void game::placeCreature(uint player_index) {
     field * start = nullptr;
     if( player_index % 2 == 0)

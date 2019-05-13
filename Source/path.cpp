@@ -8,6 +8,11 @@ namespace model
 {
 // returnd with "true", if there is a path between "start" and "goal"
 // "fields" is filled so that fields[0] = start and fields.back() = goal
+/** @brief Looks for path between start and goal.
+ *
+ *  @param fields,start,goal
+ *  @return Bool. returns with "true", if there is a path between "start" and "goal"
+ */
 bool dijkstra(std::vector<field* >& fields, field* start, field* goal)
 {
     if(start == nullptr || goal == nullptr)
@@ -85,7 +90,10 @@ bool path::check() const
             return false;
     return true;
 }
-
+/** @brief Checks if path still valid.
+ *
+ *  @return Bool.
+ */
 bool path::recheck()
 {
     if(! check() )
@@ -93,7 +101,10 @@ bool path::recheck()
             return false;
     return true;
 }
-
+/** @brief Next step on the path.
+ *
+ *  @return Bool. returns with "true", if enemy base not reached.
+ */
 bool path::operator++()
 {
     // if the current field is a neighbour of the enemy base:

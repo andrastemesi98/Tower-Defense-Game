@@ -13,7 +13,11 @@ _speed(sp) {
     _path = new path(l, en_base_loc);
 }
 
-//?delete from field?
+/** @brief Decrements unit health with given amount.
+ *
+ *  @param amount
+ *  @return Void.
+ */
 void unit::take_damage(uint amount){
     if(amount>=_HP){
         _HP=0;
@@ -24,16 +28,28 @@ void unit::take_damage(uint amount){
         _HP-=amount;
     }
 }
+/** @brief Checks if unit lives.
+ *
+ *  @return Bool.
+ */
 bool unit::alive() const{
     return _HP>0;
 }
-
+/** @brief Called when unit dies. Removes from field and from player.
+ *
+ *  @return Void.
+ */
 void unit::remove()
 {
     _loc->remUnit(this);
     _owner->removeUnit(this);
 }
-
+/** @brief Places unit on the next field of the appropiate path.
+ *
+ *  If there is not a valid path, then unit is destroyed.
+ *
+ *  @return Void.
+ */
 void unit::move()
 {
     if ( ! _path->recheck() ) { // if there is no path left to the goal -> the unit is destroyed

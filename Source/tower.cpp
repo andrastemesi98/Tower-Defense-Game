@@ -2,6 +2,14 @@
 
 namespace model
 {
+/** @brief Shoots at a unit on a neighbour field
+ *
+ *  Checks from the top left corner if there is a unit.
+ *  If that is an enemy unit calls take_damage of that.
+ *  Only one shot.
+ *
+ *  @return Void.
+ */
 void tower::shoot(){
     //Implemented only for 1 range
     //
