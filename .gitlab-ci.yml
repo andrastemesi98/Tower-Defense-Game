@@ -1,0 +1,29 @@
+# Default image (https://hub.docker.com/_/ubuntu/)
+image: ubuntu:18.04
+
+stages:
+  - build
+  - test
+
+before_script:
+  - apt-get update -yqq
+  - apt-get install -yqq build-essential
+  - apt-get install -yqq qt5-default
+  
+# Build
+build_game:
+  stage: build
+  script:
+    - cd Source
+    - qmake
+    - make
+
+# Test
+test_model:
+  stage: test
+  script:
+    - cd Test
+    - qmake
+    - make
+    - make check
+
