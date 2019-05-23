@@ -63,21 +63,30 @@ public slots:
      * ha most először játszunk egy multiplayert => kijön egy ablak, nickname-et kér
      * megnyílik a játék, AZONNAL kezdődik a játék.
      */
+public slots:
+    void SLOT_wait_multiplayer_button();
 public:
     void ReadLineFromServer(QString line);
+    void MP_back_to_main_menu(); // "visszatérés" a főmenübe.
+    void MPDeleteScene();
     // a server oldal ready-readje => ezt a serverclass hívja meg ha üzenetet kapott (soronként)
 private slots:
     void SLOT_start_multiplayer_button();
-    void SLOT_wait_multiplayer_button();
     void readyRead(); // Ha van mit beolvasni a socketből
     void connected(); /* Ha sikeres a csatlakozás a másik socketbe
                          => összekapcsolódott a két gép. */
     void conn_fail(QAbstractSocket::SocketError); // ha sikertelen a csatlakozás => vissza a főmenübe.
+    // gombok:
+    void MPno_model_buttonClicked();
+    void MPmodel_buttonClicked();
+    // egyéb:
+    void MPupdate();
+    void MPGameOver(int winner);
+    void MPGoldChanged(QString);
 private:
     void MP_connect(); // megpróbálunk csatlakozni a másik géphez
     void MP_start_game(); // létrehozza a multiplayer játékhoz szükséges struktúrákat.
     // <= ez akkor hívódik meg, ha sikeres volt a csatlakokzás.
-    void MP_back_to_main_menu(); // "visszatérés" a főmenübe.
 
     // üzenetek, amiket bármelyik oldal küldhet a másiknak:
     void send_nickname(); // elküldi a másiknak a választott nickname-et
@@ -85,16 +94,21 @@ private:
     // üzenetek, amiket küldhetünk a másik gépnek, ha itt van a model:
     void send_game_geometry(); // elküldi a másik gépnek, hogy mekkora pályán játszunk
     // <= a bázisok helyét már a másik oldalon számoljuk ki
-    void send_base_destroyed(int playernum);
+    void send_base_info(uint posx, uint posy, uint owner, uint HP);
     // <= elküldi a másik gépnek, ha megsemmisült egy base
     void send_place_tower(uint posx, uint posy, int playernum);
     // <= elküldi a másik gépnek, ha leraktunk egy tornyot.
-    void send_remove_unit(uint posx, uint posy);
+    //void send_remove_unit(uint posx, uint posy);
     // <= elküldi a másik gépnek, ha egy egység mozog.
-    void send_place_unit(uint posx, uint posy, int playernum);
+    //void send_place_unit(uint posx, uint posy, int playernum);
+    void send_unit_position(uint posx, uint posy, uint playerID, uint unit_num);
+    // <= MINDEN EGYES UPDATE-NÉL, minden egyes unitot tartalmazó mezőre meghívódik
+
+    void MPCreateButtonTable();
 
     // üzenetek, amiket küldhetünk a másik gépnek, ha a model a másik gépen van:
-    // ??? <= van itt bármi is?
+    void send_ask_tower_placement(uint posx, uint posy); // ez mindig a 2. (1-es indexű) játékosé
+    void send_ask_unit_placement();
 
     // ------------------------------
     // Networking member variables:
@@ -161,9 +175,8 @@ public:
     void incomingConnection(qintptr handle);
     void sendLine(QString line);
 private slots:
-    //void readyReadServer();
     void readyReadServer(); // a server oldal ready-readje
-    //void disconnected();
+    void disconnected();
 signals:
     void SIG_conn_established();
 private:
