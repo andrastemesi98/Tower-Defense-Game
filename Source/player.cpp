@@ -96,9 +96,9 @@ std::vector<field*> buf;
 bool player:: placeTower(int ID, field* loc){
     if(_gold>=100){
         tower *t = new tower(this, loc, 1, 1);
-        _towers.push_back(t);
         bool b = loc->addTower(t);
         if( ! b ) return false;
+        _towers.push_back(t);
         // remove tower if neccessary:
         if ( ! dijkstra(buf, _base->location(), getEnemyPlayer()->_base->location()) ) {
             _towers.resize( _towers.size() -1 );
@@ -141,11 +141,11 @@ void player::update(){
         std::cerr << "position of unit " << i << " of player " << this->ID() << ": " <<
                      _units[i]->location()->x << ";" << _units[i]->location()->y << std::endl;
     }
-    for(auto u : _units) {
-        u->move();
-    }
     for( auto u : _removed_units) {
         _units.erase(std::remove(_units.begin(), _units.end(), u), _units.end());
+    }
+        for(auto u : _units) {
+        u->move();
     }
     for( auto t: _towers) {
         t->shoot();
